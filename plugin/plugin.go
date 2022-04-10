@@ -1,10 +1,14 @@
 package plugin
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // 插件只需要基于接口进行实现即可，无需考虑其他逻辑
 type Plugin interface {
 	Load() error
+	Order() int
 }
 
 var plugins = make(map[string]Plugin)
@@ -17,12 +21,20 @@ func Register(name string, plugin Plugin) {
 	plugins[name] = plugin
 }
 
-// 后置处理，再插件注册完毕后开始批量载入插件
+// 后置处理，插件注册完毕后开始批量载入插件
 func PostProccess() error {
-	// 可以考虑并行
+	values := make([]Plugin, 0, len(plugins))
 	for _, v := range plugins {
-		err := v.Load()
-		if err != nil {
+		values = append(values, v)
+	}
+	// 排序后加载插件，避免相互依赖的插件冲突
+	sort.Slice(values, func(i, j int) bool {
+		return values[i].Order() < values[j].Order()
+	})
+
+	for i := 0; i < len(values); i++ {
+		fmt.Printf("初始化插件: [%T] \n", values[i])
+		if err := values[i].Load(); err != nil {
 			return err
 		}
 	}
