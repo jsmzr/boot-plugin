@@ -1,5 +1,8 @@
 # bootstrap-plguin
 
+[![Build Status](https://github.com/jsmzr/bootstrap-plugin/workflows/Run%20Tests/badge.svg?branch=main)](https://github.com/jsmzr/bootstrap-plugin/actions?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/jsmzr/bootstrap-plugin/branch/main/graph/badge.svg?token=HNQCAN3UVR)](https://codecov.io/gh/jsmzr/bootstrap-plugin)
+
 bootstrap plugin 旨在简化组件、库的使用，搭配 bootstrap 系列库使用可以简单、快速的完成项目的创建、开发、维护。
 
 ## 如何开始
