@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 )
 
 type Plugin interface {
@@ -13,12 +14,15 @@ type Plugin interface {
 
 var plugins = make(map[string]Plugin)
 
+func log(message string) {
+	fmt.Printf("[BOOTSTRAP-plugin] %v |%s\n", time.Now().Format("2006-01-02 15:04:05"), message)
+}
 func Register(name string, plugin Plugin) {
 	_, ok := plugins[name]
 	if ok {
 		panic(fmt.Errorf("plugin [%s] already register", name))
 	}
-	fmt.Printf("[Bootstrap-Plugin]  Register [%s] plugin.\n", name)
+	log(fmt.Sprintf("Register [%s] plugin", name))
 	plugins[name] = plugin
 }
 
@@ -35,9 +39,9 @@ func PostProccess() error {
 	for i := 0; i < len(values); i++ {
 		valueTypes[i] = fmt.Sprintf("%T", values[i])
 	}
-	fmt.Printf("[Bootstrap-Plugin]  Plugin sort [%s].", strings.Join(valueTypes, ", "))
+	log(fmt.Sprintf("Plugin sort [%s]", strings.Join(valueTypes, ", ")))
 	for i := 0; i < len(values); i++ {
-		fmt.Printf("[Bootstrap-Plugin] Load [%T]. \n", values[i])
+		log(fmt.Sprintf("Load [%T]", values[i]))
 		if err := values[i].Load(); err != nil {
 			return err
 		}
