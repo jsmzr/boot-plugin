@@ -15,7 +15,7 @@ type Plugin interface {
 var plugins = make(map[string]Plugin)
 
 func log(message string) {
-	fmt.Printf("[BOOTSTRAP-plugin] %v |%s\n", time.Now().Format("2006-01-02 15:04:05"), message)
+	fmt.Printf("[BOOT-plugin] %v |%s\n", time.Now().Format("2006-01-02 15:04:05"), message)
 }
 func Register(name string, plugin Plugin) {
 	_, ok := plugins[name]
