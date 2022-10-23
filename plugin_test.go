@@ -18,12 +18,19 @@ func (t *TestPlugin) Order() int {
 	return 0
 }
 
+func (t *TestPlugin) Enabled() bool {
+	return true
+}
+
 func (t *Test1Plugin) Load() error {
 	return nil
 }
 
 func (t *Test1Plugin) Order() int {
 	return 100
+}
+func (t *Test1Plugin) Enabled() bool {
+	return true
 }
 func (t *Test2Plugin) Load() error {
 	return nil
@@ -32,12 +39,19 @@ func (t *Test2Plugin) Load() error {
 func (t *Test2Plugin) Order() int {
 	return 200
 }
+func (t *Test2Plugin) Enabled() bool {
+	return true
+}
 func (t *TestErrorPlugin) Load() error {
 	return fmt.Errorf("mock load error")
 }
 
 func (t *TestErrorPlugin) Order() int {
 	return 100
+}
+
+func (t *TestErrorPlugin) Enabled() bool {
+	return true
 }
 
 func TestRegister(t *testing.T) {
