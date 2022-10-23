@@ -10,6 +10,7 @@ import (
 type Plugin interface {
 	Load() error
 	Order() int
+	Enabled() bool
 }
 
 var plugins = make(map[string]Plugin)
@@ -41,8 +42,13 @@ func PostProccess() error {
 	}
 	log(fmt.Sprintf("Plugin sort [%s]", strings.Join(valueTypes, ", ")))
 	for i := 0; i < len(values); i++ {
-		log(fmt.Sprintf("Load [%T]", values[i]))
-		if err := values[i].Load(); err != nil {
+		value := values[i]
+		if !value.Enabled() {
+			log(fmt.Sprintf("Plugin [%T] enabled config is false", value))
+			continue
+		}
+		log(fmt.Sprintf("Load [%T] plugin", value))
+		if err := value.Load(); err != nil {
 			return err
 		}
 	}
