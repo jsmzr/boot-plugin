@@ -3,19 +3,22 @@ package plugin
 import (
 	"fmt"
 	"testing"
+
+	"github.com/spf13/viper"
 )
 
 type TestPlugin struct{}
 type Test1Plugin struct{}
 type Test2Plugin struct{}
 type TestErrorPlugin struct{}
+type Test1ErrorPlugin struct{}
 
 func (t *TestPlugin) Load() error {
 	return nil
 }
 
 func (t *TestPlugin) Order() int {
-	return 0
+	return -1
 }
 
 func (t *TestPlugin) Enabled() bool {
@@ -30,7 +33,7 @@ func (t *Test1Plugin) Order() int {
 	return 100
 }
 func (t *Test1Plugin) Enabled() bool {
-	return true
+	return false
 }
 func (t *Test2Plugin) Load() error {
 	return nil
@@ -51,6 +54,18 @@ func (t *TestErrorPlugin) Order() int {
 }
 
 func (t *TestErrorPlugin) Enabled() bool {
+	return true
+}
+
+func (t *Test1ErrorPlugin) Load() error {
+	return fmt.Errorf("mock load error")
+}
+
+func (t *Test1ErrorPlugin) Order() int {
+	return -2
+}
+
+func (t *Test1ErrorPlugin) Enabled() bool {
 	return true
 }
 
@@ -79,9 +94,21 @@ func TestPostProccess(t *testing.T) {
 }
 
 func TestPostProccessError(t *testing.T) {
+	viper.Set("boot.config.file", "bad_config_test.yaml")
+	if err := PostProccess(); err == nil {
+		t.Fatal("init config should be error")
+	}
+
+	viper.Set("boot.config.file", "application.yaml")
 	plugins = make(map[string]Plugin)
 	Register("test", &TestPlugin{})
 	Register("testError", &TestErrorPlugin{})
+	if err := PostProccess(); err == nil {
+		t.Fatal("post proccess should be error")
+	}
+	plugins = make(map[string]Plugin)
+	Register("test", &TestPlugin{})
+	Register("testError1", &Test1ErrorPlugin{})
 	if err := PostProccess(); err == nil {
 		t.Fatal("post proccess should be error")
 	}
