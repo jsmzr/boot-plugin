@@ -7,6 +7,26 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
 
 ## 如何开始
 
+### 开发进度
+
+- [ ] config
+    - [x] boot-plugin-apollo
+- [ ] db
+    - [x] boot-plugin-oracle
+    - [ ] boot-plugin-mysql
+    - [ ] boot-plugin-gorm
+- [ ] mertrics
+    - [x] boot-plugin-prometheus
+- [ ] trace
+    - [x] boot-plugin-skywalking
+- [ ] log
+    - [x] boot-plugin-logrus
+- [ ] cache
+    - [ ] boot-plugin-redis
+- [ ] api document
+    - [ ] boot-plugin-swagger
+
+
 ### 插件的开发
 
 1. 依赖 `boot-plugin` 库
@@ -15,6 +35,8 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
     2. 插件加载顺序
     3. 插件加载逻辑
 3. 调用 `Register` 方法注册插件
+
+未避免插件扩展问题，通常插件的开关和顺序不应写死，请都使用 viper 来获取
 
 当前区分了两种插件顺序
 
@@ -36,7 +58,7 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
 ### 插件的使用
 
 1. 依赖所需要的插件库
-2. 导入插件库，`import _ "github.com/jsmzr/boot-plugin-logrus/logrus"`
-3. 显式初始化插件 `import "github.com/jsmzr/boot-plugin/plugin"`, `plugin.PostProccess()`
+2. 导入插件库，`import _ "github.com/jsmzr/boot-plugin-logrus"`
+3. 显式初始化插件 `import plugin "github.com/jsmzr/boot-plugin"`, `plugin.PostProccess()`
 
 完成插件初始化后即可使用对应插件功能
