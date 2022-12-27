@@ -13,8 +13,7 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
     - [x] boot-plugin-apollo
 - [ ] db
     - [x] boot-plugin-oracle
-    - [ ] boot-plugin-mysql
-    - [ ] boot-plugin-gorm
+    - [x] boot-plugin-gorm-mysql
 - [ ] mertrics
     - [x] boot-plugin-prometheus
 - [ ] trace
@@ -22,9 +21,9 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
 - [ ] log
     - [x] boot-plugin-logrus
 - [ ] cache
-    - [ ] boot-plugin-redis
+    - [x] boot-plugin-redis
 - [ ] api document
-    - [ ] boot-plugin-swagger
+    - [x] boot-plugin-gin-swagger
 
 
 ### 插件的开发
@@ -37,6 +36,12 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
 3. 调用 `Register` 方法注册插件
 
 未避免插件扩展问题，通常插件的开关和顺序不应写死，请都使用 viper 来获取
+
+按照约定大于配置的规则，通常插件应该有一些必要的默认配置项，以减少配置管理工作量。通过 `InitDefaultConfig` 方法更新默认配置。
+
+在 plugin 中最终是使用 viper 做配置管理，并未将各配置源的配置项合并。这种情况下并不建议使用 `Unmarshal` 的方式来获取配置。
+
+配置获取优先级为 flag, env, config file, key/value store
 
 当前区分了两种插件顺序
 
@@ -62,3 +67,13 @@ boot plugin 旨在简化组件、库的使用，搭配 boot 系列库使用可�
 3. 显式初始化插件 `import plugin "github.com/jsmzr/boot-plugin"`, `plugin.PostProccess()`
 
 完成插件初始化后即可使用对应插件功能
+
+如果是使用 gin 或者 echo 框架，可以直接使用 `github.com/jsmzr/boot-gin` 和 `boot-echo` 库
+
+```go
+func main() {
+    if err := boot.Run(); err != nil {
+        fmt.Println(err)
+    }
+}
+```

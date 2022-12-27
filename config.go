@@ -9,7 +9,17 @@ import (
 
 const configPrefix string = "boot.config."
 
-var defaultConfig map[string]interface{} = map[string]interface{}{"file": "application.yaml", "path": "."}
+var defaultConfig map[string]interface{} = map[string]interface{}{
+	"file":    "application.yaml",
+	"path":    ".",
+	"enabled": true,
+}
+
+func InitDefaultConfig(prefix string, config map[string]interface{}) {
+	for key := range config {
+		viper.SetDefault(prefix+key, config[key])
+	}
+}
 
 func initEnv() {
 	// env start with BOOT_
@@ -20,9 +30,7 @@ func initEnv() {
 
 func initDefault() {
 	// default config file, if you don't set by envs and flags, use this
-	for key := range defaultConfig {
-		viper.SetDefault(configPrefix+key, defaultConfig[key])
-	}
+	InitDefaultConfig(configPrefix, defaultConfig)
 }
 
 func initLocalConfig() error {
@@ -43,5 +51,9 @@ func initLocalConfig() error {
 func initConfig() error {
 	initEnv()
 	initDefault()
-	return initLocalConfig()
+	if viper.GetBool(configPrefix + "enabled") {
+
+		return initLocalConfig()
+	}
+	return nil
 }

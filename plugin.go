@@ -78,6 +78,6 @@ func baseLoad(plugins []Plugin) error {
 func fastLoad(plugins []Plugin) error {
 	// refresh order by config
 	sortPlugin(plugins)
-	// use goroutine
+	// TODO use goroutine
 	return loadPlugins(plugins)
 }

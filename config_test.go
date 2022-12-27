@@ -50,3 +50,19 @@ func TestInitConfig(t *testing.T) {
 		t.Fatal("viper get boot.application.name should be demo")
 	}
 }
+
+func TestInitConfig2(t *testing.T) {
+	viper.Set(configPrefix+"enabled", false)
+	if err := initConfig(); err != nil {
+		t.Fatal(err)
+	}
+	viper.Set(configPrefix+"enabled", true)
+}
+
+func TestBadLocalConfig(t *testing.T) {
+	viper.Set(configPrefix+"file", "bad_config_test.yaml")
+	if err := initLocalConfig(); err == nil {
+		t.Fatal("init local config should be error")
+	}
+	viper.Set(configPrefix+"file", "application_test.yaml")
+}
